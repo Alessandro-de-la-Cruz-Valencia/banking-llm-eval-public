@@ -2,7 +2,7 @@
 
 ## 1. Conjunto de preguntas
 
-- ~50 preguntas en español, redactadas como las escribiría un cliente real de un banco en México.
+- 50 preguntas en español, redactadas como las escribiría un cliente real de un banco en México.
 - 6 categorías (ver `data/categories.csv`): comisiones, aclaraciones, CAT, transferencias, tarjetas y fraudes.
 - Cada pregunta incluye:
   - `key_points`: lo que una respuesta correcta debe cubrir.
