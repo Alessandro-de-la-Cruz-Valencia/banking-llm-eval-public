@@ -74,7 +74,7 @@ Requiere Python 3.10+ y no tiene dependencias externas.
 pip install -e .
 
 # 1. Generar respuestas (una vez por modelo; se puede reanudar)
-export ANTHROPIC_API_KEY=...  OPENAI_API_KEY=...  GEMINI_API_KEY=...
+cp .env.example .env   # y pon ahí tus API keys
 python -m banking_llm_eval.generate --provider anthropic --model <id-del-modelo> --name claude
 python -m banking_llm_eval.generate --provider openai    --model <id-del-modelo> --name gpt
 python -m banking_llm_eval.generate --provider gemini    --model <id-del-modelo> --name gemini

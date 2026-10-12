@@ -5,7 +5,8 @@ Uso:
     python -m banking_llm_eval.generate --provider openai --model <id> --name gpt
     python -m banking_llm_eval.generate --provider gemini --model <id> --name gemini
 
-Las API keys se leen de ANTHROPIC_API_KEY, OPENAI_API_KEY y GEMINI_API_KEY.
+Las API keys se leen de ANTHROPIC_API_KEY, OPENAI_API_KEY y GEMINI_API_KEY, ya sea
+del entorno o de un archivo .env en la raíz del proyecto (ver .env.example).
 Las respuestas se agregan a data/responses/<name>.jsonl; las preguntas que ya
 tienen respuesta se omiten, así que el script se puede reanudar.
 """
@@ -91,6 +92,20 @@ def parse_response(provider: str, payload: dict) -> tuple[str, str | None]:
     raise ValueError(f"Proveedor desconocido: {provider}")
 
 
+def load_dotenv(path: Path) -> None:
+    """Carga variables KEY=valor de un archivo .env sin sobrescribir las existentes."""
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        value = value.strip().strip('"').strip("'")
+        if value:
+            os.environ.setdefault(key.strip(), value)
+
+
 def call_api(url: str, headers: dict, body: dict, retries: int = 4) -> dict:
     data = json.dumps(body).encode("utf-8")
     for attempt in range(retries + 1):
@@ -125,6 +140,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--data", type=Path, default=Path("data"))
     args = parser.parse_args(argv)
 
+    load_dotenv(Path(".env"))
     api_key = os.environ.get(API_KEY_ENV[args.provider])
     if not api_key:
         print(f"Falta la variable de entorno {API_KEY_ENV[args.provider]}", file=sys.stderr)

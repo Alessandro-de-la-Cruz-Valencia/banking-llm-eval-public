@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Resumen de resultados",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "banking_llm_eval",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Calificar respuestas",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "banking_llm_eval.rate",
+      "args": ["--rater", "alessandro"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Generar respuestas (prueba con 3)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "banking_llm_eval.generate",
+      "args": ["--provider", "${input:provider}", "--model", "${input:model}", "--name", "${input:name}", "--limit", "3"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }
+  ],
+  "inputs": [
+    { "id": "provider", "type": "pickString", "description": "Proveedor", "options": ["anthropic", "openai", "gemini"] },
+    { "id": "model", "type": "promptString", "description": "ID exacto del modelo" },
+    { "id": "name", "type": "pickString", "description": "Nombre en reportes", "options": ["claude", "gpt", "gemini"] }
+  ]
+}

@@ -1,7 +1,11 @@
+import os
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 from banking_llm_eval.data import Question, Rating
-from banking_llm_eval.generate import SYSTEM_PROMPT, build_request, parse_response
+from banking_llm_eval.generate import SYSTEM_PROMPT, build_request, load_dotenv, parse_response
 from banking_llm_eval.rate import ask_label, pending_items
 from banking_llm_eval.report import examples_markdown
 
@@ -28,6 +32,18 @@ class BuildRequestTest(unittest.TestCase):
     def test_unknown_provider(self):
         with self.assertRaises(ValueError):
             build_request("otro", "m", "q", "k", None)
+
+
+class LoadDotenvTest(unittest.TestCase):
+    def test_reads_values_without_overriding(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / ".env"
+            path.write_text('# comentario\nA_KEY="abc"\nB_KEY=nuevo\nC_KEY=\n', encoding="utf-8")
+            with mock.patch.dict(os.environ, {"B_KEY": "viejo"}, clear=True):
+                load_dotenv(path)
+                self.assertEqual(os.environ["A_KEY"], "abc")
+                self.assertEqual(os.environ["B_KEY"], "viejo")
+                self.assertNotIn("C_KEY", os.environ)
 
 
 class ParseResponseTest(unittest.TestCase):
