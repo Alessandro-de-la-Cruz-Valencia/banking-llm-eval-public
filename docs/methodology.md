@@ -24,7 +24,8 @@ los resultados cambian entre versiones.
 
 - Mismo prompt de sistema para todos los modelos (ver abajo), sin herramientas ni búsqueda web.
 - Temperatura baja y una sola respuesta por pregunta y modelo.
-- Las respuestas se guardan sin editar en `data/responses/<modelo>.jsonl`.
+- Las respuestas se guardan sin editar en `data/responses/<modelo>.jsonl` con `python -m banking_llm_eval.generate`,
+  junto con la versión exacta del modelo que reporta la API, la fecha y los parámetros.
 
 Prompt de sistema:
 
@@ -35,7 +36,8 @@ Prompt de sistema:
 
 - Cada respuesta se califica a mano con la rúbrica de `docs/rubric.md`.
 - Las calificaciones se guardan en `data/ratings/ratings.csv` con una justificación por fila.
-- Las preguntas se califican sin ver qué modelo respondió (cegado) cuando es posible.
+- `python -m banking_llm_eval.rate` presenta las respuestas en orden aleatorio y sin el nombre del
+  modelo (calificación a ciegas).
 
 ## 5. Análisis
 
@@ -43,6 +45,7 @@ Prompt de sistema:
 
 - `summary.csv`: conteos y porcentajes por modelo, categoría y etiqueta.
 - `summary.md`: tablas listas para pegar en el README.
+- `examples.md`: respuestas etiquetadas como riesgosas o inventadas, con su justificación.
 
 ## Limitaciones
 

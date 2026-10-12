@@ -6,8 +6,8 @@ import argparse
 import sys
 from pathlib import Path
 
-from .data import DataError, load_categories, load_questions, load_ratings
-from .report import to_markdown, write_csv
+from .data import DataError, load_categories, load_questions, load_ratings, load_responses
+from .report import examples_markdown, to_markdown, write_csv
 from .score import summarize
 
 
@@ -30,6 +30,8 @@ def main(argv: list[str] | None = None) -> int:
     write_csv(rows, args.out / "summary.csv")
     markdown = to_markdown(rows, categories)
     (args.out / "summary.md").write_text(markdown, encoding="utf-8")
+    examples = examples_markdown(ratings, questions, load_responses(args.data / "responses"))
+    (args.out / "examples.md").write_text(examples, encoding="utf-8")
 
     print(f"{len(questions)} preguntas, {len(ratings)} calificaciones.")
     print(markdown)

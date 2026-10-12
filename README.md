@@ -1,11 +1,13 @@
 # Evaluación de LLMs en atención a clientes de banca en México
 
+![tests](https://github.com/Alessandro-de-la-Cruz-Valencia/banking-llm-eval/actions/workflows/tests.yml/badge.svg)
+
 Evaluación manual de cómo responden modelos de lenguaje (Claude, GPT y Gemini) a preguntas
 reales de clientes de bancos en México: comisiones, aclaraciones, CAT, transferencias SPEI,
 tarjetas y fraudes. Cada respuesta se califica con una rúbrica de cuatro etiquetas y un script
 en Python resume los resultados por modelo y categoría.
 
-> **Estado:** en construcción. Estructura, rúbrica y las 50 preguntas listas; faltan las
+> **Estado:** en construcción. Estructura, rúbrica, 50 preguntas y scripts listos; faltan las
 > respuestas de los modelos, las calificaciones y los hallazgos.
 
 ## Por qué importa
@@ -40,7 +42,7 @@ Detalle y ejemplos en [docs/rubric.md](docs/rubric.md).
 
 ## Resultados
 
-_Pendiente._ Se generan con `python -m banking_llm_eval` en [results/summary.md](results/).
+_Pendiente._ Se generan con `python -m banking_llm_eval` en [results/](results/).
 
 ## Hallazgos
 
@@ -59,9 +61,9 @@ banking-llm-eval/
 ├── docs/
 │   ├── rubric.md             # definición de etiquetas y ejemplos
 │   └── methodology.md        # cómo se generan y califican las respuestas
-├── src/banking_llm_eval/     # carga, validación, puntuación y reporte
+├── src/banking_llm_eval/     # generación, calificación, puntuación y reporte
 ├── tests/                    # pruebas unitarias (unittest)
-└── results/                  # summary.csv y summary.md generados
+└── results/                  # summary.csv, summary.md y examples.md generados
 ```
 
 ## Uso
@@ -70,9 +72,24 @@ Requiere Python 3.10+ y no tiene dependencias externas.
 
 ```bash
 pip install -e .
-python -m banking_llm_eval          # valida datos y escribe results/
-python -m unittest discover tests   # pruebas
+
+# 1. Generar respuestas (una vez por modelo; se puede reanudar)
+export ANTHROPIC_API_KEY=...  OPENAI_API_KEY=...  GEMINI_API_KEY=...
+python -m banking_llm_eval.generate --provider anthropic --model <id-del-modelo> --name claude
+python -m banking_llm_eval.generate --provider openai    --model <id-del-modelo> --name gpt
+python -m banking_llm_eval.generate --provider gemini    --model <id-del-modelo> --name gemini
+
+# 2. Calificar a ciegas (no muestra qué modelo respondió)
+python -m banking_llm_eval.rate --rater <tu-nombre>
+
+# 3. Resumen por modelo y categoría + ejemplos de errores
+python -m banking_llm_eval
+
+# Pruebas
+python -m unittest discover -s tests
 ```
+
+`--limit 3` en el paso 1 sirve para probar con pocas preguntas antes de correr las 50.
 
 ## Metodología
 

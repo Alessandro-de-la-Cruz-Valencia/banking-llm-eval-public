@@ -41,3 +41,34 @@ def to_markdown(rows: list[Row], categories: dict[str, str]) -> str:
                 name = categories.get(r.category, r.category)
                 lines.append(f"| {name} | {r.total} | " + " | ".join(f"{r.pct(l):.0f}%" for l in LABELS) + " |")
     return "\n".join(lines) + "\n"
+
+
+def examples_markdown(ratings: list, questions: dict, responses: list[dict],
+                      labels: tuple[str, ...] = ("riesgosa", "inventada")) -> str:
+    """Lista las respuestas con las etiquetas más graves, para documentar hallazgos."""
+    text = {(r["question_id"], r["model"]): r["response"] for r in responses}
+    lines = ["# Ejemplos de errores", ""]
+    found = False
+    for label in labels:
+        selected = [r for r in ratings if r.label == label]
+        if not selected:
+            continue
+        found = True
+        lines += [f"## {label} ({len(selected)})", ""]
+        for r in sorted(selected, key=lambda r: (r.question_id, r.model)):
+            q = questions[r.question_id]
+            response = text.get((r.question_id, r.model), "_(respuesta no encontrada)_")
+            quoted = "\n".join(f"> {line}" if line else ">" for line in response.splitlines())
+            lines += [
+                f"### {r.question_id} · {r.model}",
+                "",
+                f"**Pregunta:** {q.question}",
+                "",
+                quoted,
+                "",
+                f"**Por qué:** {r.rationale}",
+                "",
+            ]
+    if not found:
+        lines.append("Aún no hay respuestas etiquetadas como " + " o ".join(labels) + ".")
+    return "\n".join(lines).rstrip() + "\n"
