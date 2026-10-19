@@ -1,6 +1,6 @@
 # Evaluación de LLMs en atención a clientes de banca en México
 
-![tests](https://github.com/Alessandro-de-la-Cruz-Valencia/banking-llm-eval/actions/workflows/tests.yml/badge.svg)
+![tests](https://github.com/Alessandro-de-la-Cruz-Valencia/banking-llm-eval-public/actions/workflows/tests.yml/badge.svg)
 
 Evaluación manual de cómo responden modelos de lenguaje (Claude, GPT y Gemini) a preguntas
 reales de clientes de bancos en México: comisiones, aclaraciones, CAT, transferencias SPEI,
